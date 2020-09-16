@@ -1,27 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DogGo.Models;
+﻿using DogGo.Models;
 using DogGo.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace DogGo.Controllers
 {
-    public class WalkerController : Controller
+    public class WalkersController : Controller
     {
-        // GET: WalkerController
+        private readonly WalkersRepository _walkerRepo;
+
+        // The constructor accepts an IConfiguration object as a parameter. This class comes from the ASP.NET framework and is useful for retrieving things out of the appsettings.json file like connection strings.
+        public WalkersController(IConfiguration config)
+        {
+            _walkerRepo = new WalkersRepository(config);
+        }
+
+        // GET: WalkersController
         public ActionResult Index()
         {
             List<Walker> walkers = _walkerRepo.GetAllWalkers();
+
             return View(walkers);
         }
+
 
         // GET: WalkerController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Walker walker = _walkerRepo.GetWalkerById(id);
+
+            if (walker == null)
+            {
+                return NotFound();
+            }
+
+            return View(walker);
         }
 
         // GET: WalkerController/Create
@@ -30,7 +45,7 @@ namespace DogGo.Controllers
             return View();
         }
 
-        // POST: WalkerController/Create
+        // POST: WalkersController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -45,10 +60,11 @@ namespace DogGo.Controllers
             }
         }
 
-        // GET: WalkerController/Edit/5
+        // GET: WalkersController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Walker walker = _walkerRepo.GetWalkerById(id);
+            return View(walker);
         }
 
         // POST: WalkerController/Edit/5
@@ -87,12 +103,5 @@ namespace DogGo.Controllers
             }
         }
 
-        private readonly IWalkerRepository _walkerRepo;
-
-        // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkerController(IWalkerRepository walkerRepository)
-        {
-            _walkerRepo = walkerRepository;
-        }
     }
 }

@@ -25,7 +25,7 @@ namespace DogGo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient<IWalkerRepository, WalkerRepository>();
+            services.AddTransient<IWalkersRepository, WalkersRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +54,13 @@ namespace DogGo
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            /*if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }*/
+
         }
     }
 }
