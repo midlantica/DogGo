@@ -25,7 +25,8 @@ namespace DogGo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient<IWalkersRepository, WalkersRepository>();
+            services.AddTransient<IWalkerRepository, WalkerRepository>();
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
