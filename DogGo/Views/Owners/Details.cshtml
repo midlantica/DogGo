@@ -1,6 +1,6 @@
-﻿@model DogGo.Models.ViewModels.ProfileViewModel
+﻿@model DogGo.Models.ViewModels.ProfileFormViewModel
 
-@{ ViewData["Title"] = "Details"; }
+@{ ViewData["Title"] = "Profile"; }
 <div>
     <h1 class="mb-4">@Model.Owner.Name</h1>
 
@@ -36,7 +36,7 @@
                         {
                             <img src="https://cdn.pixabay.com/photo/2018/08/15/13/12/dog-3608037_960_720.jpg"
                                  class="card-img-top"
-                                 alt="Doggo" />
+                                 alt="Doggo @dog.Name" />
                         }
                         else
                         {

@@ -42,7 +42,7 @@ namespace DogGo.Controllers
             List<Dog> dogs = _dogRepo.GetDogsByOwnerId(owner.Id);
             List<Walker> walkers = _walkerRepo.GetWalkersInNeighborhood(owner.NeighborhoodId);
 
-            ProfileViewModel vm = new ProfileViewModel()
+            ProfileFormViewModel vm = new ProfileFormViewModel()
             {
                 Owner = owner,
                 Dogs = dogs,
@@ -118,7 +118,10 @@ namespace DogGo.Controllers
                 return NotFound();
             }
 
-            return View(owner);
+            OwnerFormViewModel vm = new OwnerFormViewModel();
+            vm.Owner = owner;
+            vm.Neighborhoods = _neighborhoodRepo.GetAll();
+            return View(vm);
         }
 
         // POST: Owners/Edit/5
