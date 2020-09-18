@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DogGo.Controllers;
+using System.Collections.Generic;
 
 namespace DogGo.Models.ViewModels
 {
