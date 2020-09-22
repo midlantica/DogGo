@@ -33,7 +33,7 @@ namespace DogGo.Controllers
 
         public IActionResult Index()
         {
-            List<Owner> owners = _ownerRepo.GetAll();
+            List<Owner> owners = _ownerRepo.GetAllOwners();
             return View(owners);
         }
 
@@ -114,14 +114,20 @@ namespace DogGo.Controllers
         // GET: Owners/Edit/5
         public ActionResult Edit(int id)
         {
-            Owner owner = _ownerRepo.GetOwnerById(id);
+            List<Neighborhood> neighborhoods = _neighborhoodRepo.GetAll();
 
-            if (owner == null)
+            OwnerFormViewModel vm = new OwnerFormViewModel()
+            {
+                Owner = _ownerRepo.GetOwnerById(id),
+                Neighborhoods = neighborhoods
+            };
+
+            if (vm.Owner == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(vm);
         }
 
         // POST: Owners/Edit/5

@@ -60,7 +60,7 @@ namespace DogGo.Controllers
             DogFormViewModel vm = new DogFormViewModel()
             {
                 Dog = new Dog(),
-                Owners = _ownerRepository.GetAll(),
+                Owners = _ownerRepository.GetAllOwners(),
             };
 
             return View(vm);
@@ -101,7 +101,7 @@ namespace DogGo.Controllers
             DogFormViewModel vm = new DogFormViewModel()
             {
                 Dog = dog,
-                Owners = _ownerRepository.GetAll()
+                Owners = _ownerRepository.GetAllOwners()
             };
             return View(vm);
         }
@@ -121,7 +121,7 @@ namespace DogGo.Controllers
                 DogFormViewModel vm = new DogFormViewModel()
                 {
                     Dog = dog,
-                    Owners = _ownerRepository.GetAll()
+                    Owners = _ownerRepository.GetAllOwners()
                 };
                 return View(vm);
             }

@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace DogGo.Models.ViewModels
 {
-    public class WalkerProfileViewModel
+    public class WalkerFormModel
     {
         public Walker Walker { get; set; }
-        public List<Walk> Walks { get; set; }
+        public List<Neighborhood> Neighborhoods { get; set; }
 
-        public int TotalDuration { get; set; }
     }
 }

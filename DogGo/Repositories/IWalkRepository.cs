@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace DogGo.Repositories
 {
-    public interface IWalksRepository
+    public interface IWalkRepository
     {
-        List<Walk> GetWalksByWalkerId(int walkerId);
-        void AddWalks(Walk walks);
+        List<Walks> GetWalksByWalkerId(int walkerId);
+        void AddWalks(Walks walks);
+        void DeleteWalks(int walksId);
     }
 }

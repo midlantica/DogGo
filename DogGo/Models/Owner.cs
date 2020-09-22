@@ -25,13 +25,9 @@ namespace DogGo.Models
         public string Phone { get; set; }
 
         [Required]
+        [DisplayName("Neighborhood")]
         public int NeighborhoodId { get; set; }
 
-        // LOOK AT THIS
-        //  Added a property to store an entire Neighborhood
-        //  We wil use this to display the name of the Neighborhood instead of the NeighborhoodId
-        [Required]
-        [DisplayName("Neighborhood")]
         public Neighborhood Neighborhood { get; set; }
         //public List<Dog> Dogs { get; set; }
     }
