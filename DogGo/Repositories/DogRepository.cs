@@ -24,51 +24,31 @@ namespace DogGo.Repositories
         }
 
 
-        public void AddDog(Dog newDog)
+        public void AddDog(Dog dog)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Dog (Name, OwnerId, Breed, Notes, ImageUrl)
-                                        OUTPUT INSERTED.ID
-                                        VALUES (@Name, @OwnerId, @Breed, @Notes, @ImageUrl)";
+                    cmd.CommandText = @"
+                INSERT INTO Dog ([Name], OwnerId, Breed, Notes, ImageUrl)
+                OUTPUT INSERTED.ID
+                VALUES (@name, @ownerId, @breed, @notes, @imageUrl);
+            ";
 
-                    cmd.Parameters.AddWithValue("@Name", newDog.Name);
-                    cmd.Parameters.AddWithValue("@OwnerId", newDog.OwnerId);
-                    cmd.Parameters.AddWithValue("@Breed", newDog.Breed);
+                    cmd.Parameters.AddWithValue("@name", dog.Name);
+                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
 
                     // nullable columns
-                    cmd.Parameters.AddWithValue("@notes", newDog.Notes ?? "");
-                    cmd.Parameters.AddWithValue("@imageUrl", newDog.ImageUrl ?? "");
+                    cmd.Parameters.AddWithValue("@notes", dog.Notes ?? "");
+                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl ?? "");
 
-                    // LOOK AT THIS
-                    //  If newDog.Notes is null, we can use it as the value for the SQL Parameter.
-                    //  Instead we use the special value, DbNull.Value.
-                    //  This will insert NULL into the Notes column in the database.
-                    if (newDog.Notes == null)
-                    {
-                        cmd.Parameters.AddWithValue("@Notes", DBNull.Value);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@Notes", newDog.Notes);
-                    }
+                    int newlyCreatedId = (int)cmd.ExecuteScalar();
 
-                    // LOOK AT THIS
-                    if (newDog.ImageUrl == null)
-                    {
-                        cmd.Parameters.AddWithValue("@ImageUrl", DBNull.Value);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@ImageUrl", newDog.ImageUrl);
-                    }
+                    dog.Id = newlyCreatedId;
 
-                    //newDog.Id = (int)cmd.ExecuteScalar();
-
-                    newDog.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
@@ -134,20 +114,30 @@ namespace DogGo.Repositories
                     SqlDataReader reader = cmd.ExecuteReader();
 
 
+                    string notes = null;
+                    string image = null;
+
+                    if (!reader.IsDBNull(reader.GetOrdinal("Notes")))
+                    {
+                        notes = reader.GetString(reader.GetOrdinal("Notes"));
+                    }
+
+                    if (!reader.IsDBNull(reader.GetOrdinal("ImageUrl")))
+                    {
+                        image = reader.GetString(reader.GetOrdinal("ImageUrl"));
+                    }
+
                     if (reader.Read())
                     {
-
                         Dog dog = new Dog()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                             OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
                             Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                            //Notes = ReaderHelpers.GetNullableString(reader, "Notes"),
-                            //ImageUrl = ReaderHelpers.GetNullableString(reader, "ImageUrl")
+                            Notes = notes,
+                            ImageUrl = image
                         };
-
-
 
                         reader.Close();
                         return dog;

@@ -31,38 +31,6 @@ namespace DogGo.Controllers
             _neighborhoodRepo = neighborhoodRepository;
         }
 
-        public ActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel viewModel)
-        {
-            Owner owner = _ownerRepo.GetOwnerByEmail(viewModel.Email);
-
-            if (owner == null)
-            {
-                return Unauthorized();
-            }
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()),
-                new Claim(ClaimTypes.Email, owner.Email),
-                new Claim(ClaimTypes.Role, "DogOwner"),
-            };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
-
-            return RedirectToAction("Index", "Dogs");
-        }
-
         public IActionResult Index()
         {
             List<Owner> owners = _ownerRepo.GetAll();
@@ -153,10 +121,7 @@ namespace DogGo.Controllers
                 return NotFound();
             }
 
-            OwnerFormViewModel vm = new OwnerFormViewModel();
-            vm.Owner = owner;
-            vm.Neighborhoods = _neighborhoodRepo.GetAll();
-            return View(vm);
+            return View(owner);
         }
 
         // POST: Owners/Edit/5
@@ -174,6 +139,45 @@ namespace DogGo.Controllers
             {
                 return View(owner);
             }
+        }
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Login(LoginViewModel viewModel)
+        {
+            Owner owner = _ownerRepo.GetOwnerByEmail(viewModel.Email);
+
+            if (owner == null)
+            {
+                return Unauthorized();
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, owner.Id.ToString()),
+                new Claim(ClaimTypes.Email, owner.Email),
+                new Claim(ClaimTypes.Role, "DogOwner"),
+                new Claim("FavColor", "Blue"),
+            };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Dogs");
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
